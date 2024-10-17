@@ -1,0 +1,195 @@
+---
+title: FormQuestion
+description: Detailed documentation for the FormQuestion model in our application.
+---
+
+# FormQuestion Model Documentation
+
+The `FormQuestion` model represents individual questions within a form. It supports various types of questions, translations, and associations with fields, templates, and options. This model is crucial for building dynamic and customizable forms in the application.
+
+## Table of Contents
+
+- [Schema Information](#schema-information)
+- [Relationships](#relationships)
+- [Enums](#enums)
+- [Scopes](#scopes)
+- [Nested Attributes](#nested-attributes)
+- [Instance Methods](#instance-methods)
+  - [update_field_kind](#update_field_kind)
+  - [kind_to_field_kind](#kind_to_field_kind)
+  - [contact_attribute_value](#contact_attribute_value)
+
+## Schema Information
+
+<TypeTable
+  type={{
+    id: {
+      description: 'Primary key for the form question',
+      type: '`integer`',
+      default: 'Auto-increment',
+    },
+    legacy_id: {
+      description: 'Legacy question ID (for backwards compatibility)',
+      type: '`integer`',
+      default: 'None',
+    },
+    kind: {
+      description: 'Type of the question (e.g., multiple_choice, dropdown)',
+      type: '`integer`',
+      default: 'None',
+    },
+    form_id: {
+      description: 'ID of the associated form',
+      type: '`integer`',
+      default: 'None',
+    },
+    form_page_id: {
+      description: 'ID of the associated form page',
+      type: '`bigint`',
+      default: 'None',
+    },
+    field_id: {
+      description: 'ID of the associated field',
+      type: '`bigint`',
+      default: 'None',
+    },
+    template_id: {
+      description: 'ID of the associated template',
+      type: '`integer`',
+      default: 'None',
+    },
+    label: {
+      description: 'JSON object containing translations for the question label',
+      type: '`json`',
+      default: 'None',
+    },
+    placeholder: {
+      description:
+        'JSON object containing translations for the placeholder text',
+      type: '`json`',
+      default: 'None',
+    },
+    hint: {
+      description: 'JSON object containing translations for the hint text',
+      type: '`json`',
+      default: 'None',
+    },
+    position: {
+      description: 'Position of the question within the form page',
+      type: '`integer`',
+      default: 'Auto-managed by acts_as_list',
+    },
+    required: {
+      description: 'Indicates if the question is required',
+      type: '`boolean`',
+      default: 'None',
+    },
+    hidden: {
+      description: 'Indicates if the question is hidden',
+      type: '`boolean`',
+      default: '`false`',
+    },
+    contact_attribute: {
+      description: 'JSON object mapping to a contact attribute',
+      type: '`json`',
+      default: 'None',
+    },
+    rules: {
+      description: 'JSON object defining display rules or validations',
+      type: '`json`',
+      default: 'None',
+    },
+    validations: {
+      description: 'JSON object containing validation rules',
+      type: '`json`',
+      default: 'None',
+    },
+    scores: {
+      description: 'JSON object containing scoring information',
+      type: '`json`',
+      default: 'None',
+    },
+    preferences: {
+      description: 'JSON object for question-specific preferences',
+      type: '`json`',
+      default: 'None',
+    },
+    created_at: {
+      description: 'Timestamp when the question was created',
+      type: '`datetime`',
+      default: 'Auto-generated',
+    },
+    updated_at: {
+      description: 'Timestamp when the question was last updated',
+      type: '`datetime`',
+      default: 'Auto-generated',
+    },
+    archived_at: {
+      description: 'Datetime when the question was archived',
+      type: '`datetime`',
+      default: 'None',
+    },
+    discarded_at: {
+      description: 'Datetime when the question was discarded',
+      type: '`datetime`',
+      default: 'None',
+    },
+  }}
+/>
+
+## Relationships
+
+The `FormQuestion` model establishes several relationships to other models:
+
+- **Form Page**:
+
+  - A `FormQuestion` belongs to a `FormPage`.
+  - `belongs_to :form_page`
+
+- **Form**:
+
+  - Indirectly associated through `FormPage`.
+  - `delegate :form, to: :form_page`
+
+- **Field**:
+
+  - Optionally belongs to a `Field`, which stores the actual data structure.
+  - `belongs_to :field, optional: true`
+
+- **Template**:
+
+  - Optionally belongs to a `Template`.
+  - `belongs_to :template, optional: true`
+
+- **Workspace**:
+
+  - Indirectly associated through `Form`.
+  - `delegate :workspace, to: :form`
+
+- **Model Items**:
+
+  - Has many `model_items` through the associated `field`.
+  - `has_many :model_items, through: :field`
+
+- **Options**:
+  - Has many `options` through the associated `field`.
+  - `has_many :options, through: :field`
+
+## Enums
+
+The `FormQuestion` model supports a wide range of question types through the `kind` enum:
+
+- `multiple_choice` (10)
+- `checkboxes` (20)
+- `dropdown` (30)
+- `file_upload` (40)
+- `short_text` (50)
+- `long_text` (60)
+- `number` (70)
+- `date` (80)
+- `email` (90)
+- `phone` (100)
+- `url` (110)
+- `textarea` (120)
+- `radio` (130)
+- `select` (140)
