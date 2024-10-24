@@ -1,0 +1,23 @@
+---
+title: acts_as_appearable
+description: ActsAsAppearable concern
+---
+
+# ActsAsAppearable Module
+
+The `ActsAsAppearable` module handles tracking online/offline states for models, likely for a system where users or accounts can appear "online" or "offline" and these states are broadcasted in real-time using ActionCable.
+
+Let’s break it down:
+
+## The `module ActsAsAppearable`
+
+This is a Ruby module. In Ruby, a module is a way to group reusable methods and constants. You can include modules in classes to share behavior without using inheritance.
+
+### `acts_as_appearable` method
+
+```ruby
+def acts_as_appearable(_options = {})
+  include InstanceMethods
+end
+
+```

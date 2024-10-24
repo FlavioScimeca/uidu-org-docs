@@ -1,0 +1,383 @@
+---
+title: Form
+description: Detailed documentation for the Form model in our application.
+---
+
+# Form Model Documentation
+
+The `Form` model represents a dynamic and flexible form within the application, allowing users to create, manage, and respond to various types of forms. It can be attached to different resources using polymorphic associations, customized with themes, and is capable of deep relationships with other models.
+
+## Illustration chart
+
+<Img src='/assets/docs/forms/model-form.png' alt='Form model' />
+
+## Schema Information
+
+<TypeTable
+  type={{
+    id: {
+      description: 'Primary key for the form',
+      type: 'integer',
+      default: 'Auto-increment',
+    },
+    workspace_app_id: {
+      description: 'ID of the associated workspace app',
+      type: 'bigint',
+      default: 'None',
+    },
+    workspace_id: {
+      description: 'ID of the workspace associated with the form',
+      type: 'bigint',
+      default: 'None',
+    },
+    list_id: {
+      description: 'ID of the list associated with the form',
+      type: 'bigint',
+      default: 'None',
+    },
+    legacy_id: {
+      description: 'Legacy form ID (for backwards compatibility)',
+      type: 'integer',
+      default: 'None',
+    },
+    formable_id: {
+      description: 'Polymorphic association ID for the formable object',
+      type: 'integer',
+      default: 'None',
+    },
+    formable_type: {
+      description: 'Polymorphic association type for the formable object',
+      type: 'string(255)',
+      default: 'None',
+    },
+    formable_kind: {
+      description: 'Specifies the kind of the formable object',
+      type: 'string(191)',
+      default: 'None',
+    },
+    theme_id: {
+      description: 'ID of the associated theme for the form',
+      type: 'bigint',
+      default: 'None',
+    },
+    kind: {
+      description:
+        'Specifies the type of form (classic, one_by_one, conversational)',
+      type: 'integer',
+      default: 'classic (0)',
+    },
+    data_collection_kind: {
+      description:
+        'Defines how data is collected (anyone, authenticated users, etc.)',
+      type: 'integer',
+      default: 'anyone (0)',
+    },
+    name: {
+      description: 'Name of the form',
+      type: 'text(65535)',
+      default: 'None',
+    },
+    description: {
+      description: 'Detailed description of the form',
+      type: 'text(16777215)',
+      default: 'None',
+    },
+    cover_data: {
+      description: 'JSON object for the cover data of the form',
+      type: 'json',
+      default: 'None',
+    },
+    begins_at: {
+      description: 'Datetime when the form becomes active',
+      type: 'datetime',
+      default: 'None',
+    },
+    finishes_at: {
+      description: 'Datetime when the form becomes inactive',
+      type: 'datetime',
+      default: 'None',
+    },
+    preferences: {
+      description: 'JSON object for form-specific preferences',
+      type: 'json',
+      default: 'None',
+    },
+    published_at: {
+      description: 'Datetime when the form was published',
+      type: 'datetime',
+      default: 'None',
+    },
+    created_at: {
+      description: 'Timestamp when the form was created',
+      type: 'datetime',
+      default: 'Auto-generated',
+    },
+    updated_at: {
+      description: 'Timestamp when the form was last updated',
+      type: 'datetime',
+      default: 'Auto-generated',
+    },
+    archived_at: {
+      description: 'Datetime when the form was archived',
+      type: 'datetime',
+      default: 'None',
+    },
+    discarded_at: {
+      description: 'Datetime when the form was discarded',
+      type: 'datetime',
+      default: 'None',
+    },
+  }}
+/>
+
+### Enums
+
+<Table
+  headings={[
+    { key: 'name', label: 'Name' },
+    { key: 'column', label: 'Linked Column' },
+    { key: 'default', label: 'Default' },
+    { key: 'supportedValues', label: 'Supported Values' },
+  ]}
+  rows={[
+    {
+      name: 'kind',
+      column: 'kind',
+      default: 'classic',
+      supportedValues: (
+        <ul>
+          <li>
+            classic: <span className='text-orange-500'>0</span>
+          </li>
+          <li>
+            one_by_one: <span className='text-orange-500'>1</span>
+          </li>
+          <li>
+            conversational: <span className='text-orange-500'>2</span>
+          </li>
+        </ul>
+      ),
+    },
+    {
+      name: 'data_collection_kind',
+      column: 'data_collection_kind',
+      default: 'anyone',
+      supportedValues: (
+        <ul>
+          <li>
+            anyone: <span className='text-orange-500'>0</span>
+          </li>
+          <li>
+            only_authenticated: <span className='text-orange-500'>1</span>
+          </li>
+          <li>
+            only_not_authenticated: <span className='text-orange-500'>2</span>
+          </li>
+        </ul>
+      ),
+    },
+  ]}
+/>
+
+## Extends
+
+- [**resourcify**](/docs/server/gems/rolify) - Likely used for role-based access control.
+- [**with_members**](/docs/server/concerns/with_members) - Possibly a custom method or concern for handling member associations.
+- [**acts_as_discardable**](/docs/server/concerns/acts_as_discardable) - Allows soft deletion of records.
+- [**acts_as_taggable_on**](/docs/server/concerns/acts_as_taggable_on) - Allows tagging of records.
+- [**acts_as_searchable**](/docs/server/concerns/acts_as_searchable) - Indicates the model can be searched, possibly using a search engine like Elasticsearch.
+- [**with_paths**](/docs/server/concerns/with_paths) - Configures path prefixes for different contexts (admin, public).
+- [**with_fields**](/docs/server/concerns/with_fields) - Handles fields associated with the form.
+
+## Belongs To
+
+<Table
+  headings={[
+    { key: 'relationshipType', label: 'Relationship Type' },
+    { key: 'description', label: 'Description' },
+    { key: 'codeSnippet', label: 'Code Snippet' },
+  ]}
+  rows={[
+    {
+      relationshipType: (
+        <Link href='/docs/server/concerns/acts_as_discardable'>
+          acts_as_discardable
+        </Link>
+      ),
+      description: 'Allows soft deletion of records.',
+      codeSnippet: <code>acts_as_discardable</code>,
+    },
+    {
+      relationshipType: 'Workspace',
+      description: 'A `Form` belongs to a `Workspace`.',
+      codeSnippet: <code>belongs_to :workspace</code>,
+    },
+    {
+      relationshipType: 'Polymorphic Formable',
+      description:
+        'The form can belong to different types of models using a polymorphic relationship (`formable`).',
+      codeSnippet: (
+        <code>belongs_to :formable, polymorphic: true, optional: true</code>
+      ),
+    },
+    {
+      relationshipType: 'Theme',
+      description: 'A `Form` optionally belongs to a `Theme`.',
+      codeSnippet: <code>belongs_to :theme, optional: true</code>,
+    },
+    {
+      relationshipType: 'Form Responses',
+      description: 'A `Form` can have many form responses.',
+      codeSnippet: <code>has_many :form_responses, dependent: :destroy</code>,
+    },
+    {
+      relationshipType: 'Form Pages',
+      description:
+        'A `Form` has many form pages, and they are ordered by position.',
+      codeSnippet: (
+        <code>
+          {
+            ' has_many :form_pages, -> { order(position: :asc) }, dependent: :destroy'
+          }
+        </code>
+      ),
+    },
+    {
+      relationshipType: 'Form Questions',
+      description: 'A `Form` has many questions through its pages.',
+      codeSnippet: <code>has_many :form_questions, through: :form_pages</code>,
+    },
+  ]}
+/>
+
+## Includes
+
+- [**Publishable**](/docs/server/concerns/publishable) - Likely provides methods related to publishing the form.
+- [**WithCover**](/docs/server/concerns/with_cover) - Possibly handles cover images or data.
+- [**WithJsonPreferences**](/docs/server/concerns/with_json_preference) - Manages JSON preferences for the form.
+
+## Relationships
+
+| <span className='font-bold'>Relationship Type</span> | <span className='font-bold w-60'>Description</span>                                             | <span className='font-bold w-60'>Code Snippet</span>                                         |
+| ---------------------------------------------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| **Workspace**                                        | A `Form` belongs to a `Workspace`.                                                              | `belongs_to :workspace`                                                                      |
+| **Polymorphic Formable**                             | The form can belong to different types of models using a polymorphic relationship (`formable`). | `belongs_to :formable, polymorphic: true, optional: true`                                    |
+| **Theme**                                            | A `Form` optionally belongs to a `Theme`.                                                       | `belongs_to :theme, optional: true`                                                          |
+| **Form Responses**                                   | A `Form` can have many form responses.                                                          | `has_many :form_responses, dependent: :destroy`                                              |
+| **Form Pages**                                       | A `Form` has many form pages, and they are ordered by position.                                 | `has_many :form_pages, -> { order(position: :asc) }, dependent: :destroy, inverse_of: :form` |
+| **Form Questions**                                   | A `Form` has many questions through its pages.                                                  | `has_many :form_questions, through: :form_pages`                                             |
+
+## Scopes
+
+- **pure**: Returns forms without a polymorphic `formable_type`.
+
+  ```ruby
+  scope :pure, -> { where(formable_type: nil) }
+  ```
+
+- **attached**: Returns forms with a polymorphic `formable_type`.
+  ```ruby
+  scope :attached, -> { where.not(formable_type: nil) }
+  ```
+
+## Methods
+
+- **can_be_published**: Determines if the form can be published based on the presence of questions.
+
+  ```ruby
+  def can_be_published
+    form_questions.length > 0
+  end
+  ```
+
+- **sorted_form_questions**: Returns form questions sorted by their page and position.
+
+  ```ruby
+  def sorted_form_questions
+    out = form_questions.includes(:form_page)
+    out.sort do |a, b|
+      if a.form_page.position == b.form_page.position
+        a.position <=> b.position
+      else
+        a.form_page.position <=> b.form_page.position
+      end
+    end
+  end
+  ```
+
+- **search_data**: Prepares data for search indexing.
+
+  ```ruby
+  def search_data
+    initialize_search_data(
+      name:,
+      kind:,
+      pure: formable.nil?,
+      published: published?,
+      published_at:
+    )
+  end
+  ```
+
+- **scores**: Returns a hash of form question global IDs mapped to their scores.
+
+  ```ruby
+  def scores
+    form_questions.each_with_object({}) do |form_question, scores|
+      next unless form_question.field
+
+      scores[form_question.field.gid] = form_question.scores if form_question.scores
+    end
+  end
+  ```
+
+- **duplicate**: Creates a deep copy of the form, excluding certain fields, and handles nested associations.
+
+  ```ruby
+  def duplicate
+    deep_clone except: %i[formable_id formable_type published_at] do |original, kopy|
+      original.form_pages.each do |form_page|
+        form_page.deep_clone except: [:form_id] do |original_page, kopy_page|
+          kopy.form_pages << kopy_page
+          original_page.form_questions.each do |form_question|
+            form_question.deep_clone except: %i[form_id form_page_id] do |original_question, kopy_question|
+              kopy_page.form_questions << kopy_question
+              next unless original_question.field
+
+              original_question.field.deep_clone except: %i[
+                fieldable_id fieldable_type
+              ] do |original_field, kopy_field|
+                kopy_question.field = kopy_field
+                kopy_field.fieldable = kopy
+                next unless original_field.options
+
+                original_field.options.each do |option|
+                  option.deep_clone except: %i[field_id] do |_original_option, kopy_option|
+                    kopy_field.options << kopy_option
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+  ```
+
+## Extensions and Modules
+
+- **resourcify**: Likely used for role-based access control.
+- **with_members**: Possibly a custom method or concern for handling member associations.
+- **acts_as_discardable**: Allows soft deletion of records.
+- **acts_as_taggable_on** and **acts_as_taggable_tenant**: Used for tagging functionality, scoped by `workspace_id`.
+- **acts_as_searchable**: Indicates the model can be searched, possibly using a search engine like Elasticsearch.
+- **with_paths**: Configures path prefixes for different contexts (admin, public).
+
+## Includes
+
+- **Publishable**: Likely provides methods related to publishing the form.
+- **WithCover**: Possibly handles cover images or data.
+- **WithJsonPreferences**: Manages JSON preferences for the form.
+
+This documentation provides a comprehensive overview of the `Form` model, detailing its schema, relationships, methods, and additional functionalities.

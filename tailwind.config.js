@@ -11,14 +11,10 @@ export default {
     './src/components/docs/**.{ts,tsx}',
     './node_modules/fumadocs-ui/dist/**/*.js',
   ],
-  presets: [createPreset()],
+  presets: [
+    createPreset({
+      preset: 'dusk',
+    }),
+  ],
   plugins: [require('tailwindcss-animate')],
-  theme: {
-    extend: {
-      colors: {
-        primary: '#000',
-        secondary: '#fff',
-      },
-    },
-  },
 };
